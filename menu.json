@@ -1,0 +1,128 @@
+[
+  {
+    "id": "belgian-classic",
+    "name": "Classic Belgian Waffle",
+    "price": 179,
+    "desc": "Golden waffle with maple syrup and whipped butter.",
+    "img": "https://images.pexels.com/photos/376464/pexels-photo-376464.jpeg",
+    "category": "waffle",
+    "flavor": "classic"
+  },
+  {
+    "id": "triple-dark-waffle",
+    "name": "Triple Dark Chocolate",
+    "price": 250,
+    "desc": "Dark chocolate infused waffle with ganache drizzle.",
+    "img": "https://images.pexels.com/photos/103124/pexels-photo-103124.jpeg",
+    "category": "waffle",
+    "flavor": "dark"
+  },
+  {
+    "id": "strawberry-milk-waffle",
+    "name": "Strawberry Bliss",
+    "price": 220,
+    "desc": "Fresh strawberries & milk chocolate shavings.",
+    "img": "https://images.pexels.com/photos/3026808/pexels-photo-3026808.jpeg",
+    "category": "waffle",
+    "flavor": "milk"
+  },
+  {
+    "id": "nutella-crunch-waffle",
+    "name": "Nutella Hazelnut",
+    "price": 199,
+    "desc": "Nutella spread with roasted hazelnuts.",
+    "img": "https://images.pexels.com/photos/1099680/pexels-photo-1099680.jpeg",
+    "category": "waffle",
+    "flavor": "milk"
+  },
+  {
+    "id": "oreo-dark-waffle",
+    "name": "Oreo Madness",
+    "price": 259,
+    "desc": "Dark waffle loaded with Oreo crumble.",
+    "img": "https://images.pexels.com/photos/10101736/pexels-photo-10101736.jpeg",
+    "category": "waffle",
+    "flavor": "dark"
+  },
+  {
+    "id": "honey-classic-waffle",
+    "name": "Honey Glazed",
+    "price": 169,
+    "desc": "Traditional waffle with pure organic honey.",
+    "img": "https://images.pexels.com/photos/1126728/pexels-photo-1126728.jpeg",
+    "category": "waffle",
+    "flavor": "classic"
+  },
+  {
+    "id": "midnight-truffle",
+    "name": "Midnight Chocolate Cake",
+    "price": 299,
+    "desc": "Rich dark chocolate truffle layers.",
+    "img": "https://images.pexels.com/photos/132694/pexels-photo-132694.jpeg",
+    "category": "cake",
+    "flavor": "dark"
+  },
+  {
+    "id": "milk-ribbon-cake",
+    "name": "Milk Chocolate Ribbon",
+    "price": 279,
+    "desc": "Silky milk chocolate silk cake.",
+    "img": "https://images.pexels.com/photos/2144112/pexels-photo-2144112.jpeg",
+    "category": "cake",
+    "flavor": "milk"
+  },
+  {
+    "id": "vanilla-classic-cake",
+    "name": "Pure Vanilla Bean",
+    "price": 249,
+    "desc": "Classic vanilla sponge with bean frosting.",
+    "img": "https://images.pexels.com/photos/140831/pexels-photo-140831.jpeg",
+    "category": "cake",
+    "flavor": "classic"
+  },
+  {
+    "id": "dark-gateau",
+    "name": "Dark Forest Gateau",
+    "price": 320,
+    "desc": "Cherries and dark chocolate shavings.",
+    "img": "https://images.pexels.com/photos/1854652/pexels-photo-1854652.jpeg",
+    "category": "cake",
+    "flavor": "dark"
+  },
+  {
+    "id": "walnut-dark-brownie",
+    "name": "Dark Walnut Brownie",
+    "price": 149,
+    "desc": "Bittersweet cocoa with crunchy walnuts.",
+    "img": "https://images.pexels.com/photos/3026804/pexels-photo-3026804.jpeg",
+    "category": "brownie",
+    "flavor": "dark"
+  },
+  {
+    "id": "fudgy-classic-brownie",
+    "name": "Classic Fudgy",
+    "price": 129,
+    "desc": "Traditional melt-in-your-mouth brownie.",
+    "img": "https://images.pexels.com/photos/2067396/pexels-photo-2067396.jpeg",
+    "category": "brownie",
+    "flavor": "classic"
+  },
+  {
+    "id": "caramel-milk-brownie",
+    "name": "Milk Caramel Swirl",
+    "price": 159,
+    "desc": "Milk chocolate with salted caramel.",
+    "img": "https://images.pexels.com/photos/3026804/pexels-photo-3026804.jpeg",
+    "category": "brownie",
+    "flavor": "milk"
+  },
+  {
+    "id": "double-dark-brownie",
+    "name": "Double Dark Lava",
+    "price": 169,
+    "desc": "Extra dark chocolate with a gooey center.",
+    "img": "https://images.pexels.com/photos/3026801/pexels-photo-3026801.jpeg",
+    "category": "brownie",
+    "flavor": "dark"
+  }
+]

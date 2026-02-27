@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>The Waffle Lab - Menu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7a3f00",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#23190f",
+                    },
+                    fontFamily: {
+                        "display": ["Work Sans"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: "Work Sans", sans-serif;
+        }
+
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
+    <div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+        <header class="sticky top-0 z-50 bg-background-dark border-b border-primary/20">
+            <div class="flex items-center p-4 justify-between">
+
+                <button onclick="goBack()" class="text-primary text-xl font-bold cursor-pointer">
+                    ←
+                </button>
+
+                <div class="flex-1 px-4">
+                    <h1 class="text-lg font-bold">The Waffle Lab</h1>
+                    <p class="text-xs text-primary">Desserts • 25-30 mins</p>
+                </div>
+
+                <div class="flex gap-3">
+                    <span class="material-symbols-outlined text-primary cursor-pointer">search</span>
+                    <span class="material-symbols-outlined text-primary cursor-pointer">share</span>
+                </div>
+
+            </div>
+        </header>
+        <main class="flex-1 pb-32">
+            <section class="pt-6">
+                <div class="px-4 pb-4">
+                    <h2 class="text-xl font-bold">Our Waffle Menu</h2>
+                </div>
+                <div id="menu-container" class="space-y-6"></div>
+            </section>
+        </main>
+        <div
+            class="fixed bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-background-dark/90 to-transparent pointer-events-none">
+            <div class="max-w-2xl mx-auto w-full pointer-events-auto">
+                <a id="view-cart-bar" href="checkout.html"
+                    class="hidden bg-primary text-white rounded-xl p-3 flex items-center justify-between shadow-2xl">
+                    <div class="flex items-center gap-3">
+                        <div class="relative bg-white/20 p-2 rounded-lg flex items-center justify-center">
+                            <span class="material-symbols-outlined">shopping_bag</span>
+                            <span class="cart-badge hidden absolute -top-1 -right-1 bg-red-600 text-white text-[8px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-background-dark transition-transform duration-300">0</span>
+                        </div>
+                        <div>
+                            <p id="cart-summary-text" class="text-xs font-medium text-white/80">0 ITEMS • ₹0</p>
+                            <p class="text-sm font-bold">VIEW CART</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <span class="text-xs font-bold mr-1">Proceed</span>
+                        <span class="material-symbols-outlined">arrow_forward_ios</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+
+</html>

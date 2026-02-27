@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>The Waffle Lab - Home</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#8d5a30",
+                        "background-light": "#f8f7f6",
+                        "background-dark": "#120f0d",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: { "DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .font-variation-fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        @keyframes bounce-subtle {
+
+            0%,
+            100% {
+                transform: translate(-50%, 0);
+                shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            }
+
+            50% {
+                transform: translate(-50%, -4px);
+                shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+            }
+        }
+
+        .animate-bounce-subtle {
+            animation: bounce-subtle 3s infinite ease-in-out;
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            position: relative;
+        }
+
+        .carousel-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .carousel-dot.active {
+            width: 20px;
+            background: white;
+        }
+
+        @keyframes kenburns {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+
+        .ken-burns {
+            animation: kenburns 10s ease-out forwards;
+        }
+
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in {
+            animation: fade-in 0.4s ease-out forwards;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen">
+    <div class="relative mx-auto max-w-md bg-background-light dark:bg-background-dark min-h-screen pb-24 shadow-2xl">
+        <header
+            class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-4 py-4 border-b border-primary/10">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-2xl">location_on</span>
+                    <div>
+                        <h1 class="text-sm font-bold flex items-center gap-1">
+                            The Waffle Lab
+                            <span class="material-symbols-outlined text-xs">expand_more</span>
+                        </h1>
+                        <p class="text-[10px] text-primary/70 uppercase tracking-wider font-semibold">Downtown
+                            Laboratory</p>
+                    </div>
+                </div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary">search</span>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary">person</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+        <main>
+            <div class="px-0 py-0 mb-6">
+                <div id="hero-carousel" class="relative h-72 w-full overflow-hidden shadow-xl group">
+                    <div id="carousel-track" class="carousel-track h-full">
+                        <!-- Slides will be injected here -->
+                    </div>
+                    
+                    <!-- Gradient Overlay -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-background-dark/80 via-transparent to-transparent pointer-events-none"></div>
+                    
+                    <!-- Content -->
+                    <div class="absolute bottom-6 left-6 right-6 z-20">
+                        <h2 id="carousel-title" class="text-2xl font-black text-white leading-tight transition-all duration-500 transform translate-y-2 opacity-0"></h2>
+                        <p id="carousel-desc" class="text-white/70 text-sm mt-1 mb-4 transition-all duration-500 delay-100 transform translate-y-2 opacity-0"></p>
+                    </div>
+
+                    <!-- Indicators -->
+                    <div id="carousel-dots" class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-30">
+                        <!-- Dots injected here -->
+                    </div>
+                </div>
+            </div>
+            <div class="px-4 mb-6">
+                <div class="flex gap-2 overflow-x-auto hide-scrollbar pb-2">
+                    <button onclick="filterMenu('all', this)" 
+                        class="filter-tab shrink-0 px-5 py-2 rounded-full text-xs font-bold transition-all duration-300 bg-primary text-white shadow-lg">
+                        All
+                    </button>
+                    <button onclick="filterMenu('dark', this)" 
+                        class="filter-tab shrink-0 px-5 py-2 rounded-full text-xs font-bold transition-all duration-300 bg-primary/10 text-primary hover:bg-primary/20">
+                        Dark
+                    </button>
+                    <button onclick="filterMenu('milk', this)" 
+                        class="filter-tab shrink-0 px-5 py-2 rounded-full text-xs font-bold transition-all duration-300 bg-primary/10 text-primary hover:bg-primary/20">
+                        Milk
+                    </button>
+                    <button onclick="filterMenu('classic', this)" 
+                        class="filter-tab shrink-0 px-5 py-2 rounded-full text-xs font-bold transition-all duration-300 bg-primary/10 text-primary hover:bg-primary/20">
+                        Classic
+                    </button>
+                </div>
+            </div>
+            <section class="px-4 mb-8">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold">Full Menu</h3>
+                </div>
+                <div id="menu-container" class="space-y-4">
+                    <!-- Menu items will be injected by app.js -->
+                </div>
+            </section>
+        </main>
+        <div id="view-cart-bar"
+            class="hidden fixed bottom-16 left-1/2 -translate-x-1/2 w-[90%] max-w-sm bg-primary text-white rounded-xl p-3 flex items-center justify-between shadow-2xl z-[60] animate-bounce-subtle">
+            <div class="flex items-center gap-3">
+                <div class="bg-white/20 p-2 rounded-lg">
+                    <span class="material-symbols-outlined text-xl">shopping_bag</span>
+                </div>
+                <div>
+                    <p id="cart-summary-text" class="text-sm font-bold">0 ITEMS | ₹0</p>
+                </div>
+            </div>
+            <a href="checkout.html"
+                class="flex items-center gap-1 bg-white/10 px-3 py-1.5 rounded-lg hover:bg-white/20 transition-colors">
+                <span class="text-xs font-bold">VIEW CART</span>
+                <span class="material-symbols-outlined text-sm">arrow_forward</span>
+            </a>
+        </div>
+        <nav
+            class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-background-light/90 dark:bg-background-dark/95 backdrop-blur-lg border-t border-primary/10 px-6 py-2 flex items-center justify-between z-50">
+            <a class="flex flex-col items-center gap-1 text-primary" href="index.html">
+                <span class="material-symbols-outlined font-variation-fill">home</span>
+                <span class="text-[10px] font-bold">Home</span>
+            </a>
+            <a class="flex flex-col items-center gap-1 opacity-50" href="#">
+                <span class="material-symbols-outlined">auto_awesome</span>
+                <span class="text-[10px] font-bold">Offers</span>
+            </a>
+            <div class="relative -mt-10">
+                <a href="checkout.html"
+                    class="w-14 h-14 bg-primary rounded-full shadow-lg shadow-primary/40 border-4 border-background-light dark:border-background-dark flex items-center justify-center text-white relative">
+                    <span class="material-symbols-outlined text-3xl">shopping_cart</span>
+                    <span class="cart-badge hidden absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-background-dark transition-transform duration-300">0</span>
+                </a>
+            </div>
+            <a class="flex flex-col items-center gap-1 opacity-50" href="#">
+                <span class="material-symbols-outlined">receipt_long</span>
+                <span class="text-[10px] font-bold">Orders</span>
+            </a>
+            <a class="flex flex-col items-center gap-1 opacity-50" href="#">
+                <span class="material-symbols-outlined">person</span>
+                <span class="text-[10px] font-bold">Account</span>
+            </a>
+        </nav>
+    </div>
+    <script src="app.js"></script>
+</body>
+
+</html>
