@@ -1,12 +1,16 @@
 from flask import Flask, request, jsonify, send_from_directory
 import json
 import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 app = Flask(__name__, static_folder='.')
 
 MENU_FILE = 'menu.json'
-ADMIN_USERNAME = 'kasthuripxia@gmail.com'
-ADMIN_PASSWORD = 'kishore@25'
+ADMIN_USERNAME = os.getenv("ADMIN_USERNAME", "admin@wafflelab.com")
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin123")
 
 def read_menu():
     if not os.path.exists(MENU_FILE):

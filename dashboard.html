@@ -9,6 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap"
         rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase_config.js"></script>
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -27,17 +29,48 @@
     </header>
 
     <main class="max-w-4xl mx-auto p-6">
-        <div class="flex justify-between items-center mb-8">
-            <h2 class="text-2xl font-black">Menu Items</h2>
-            <button onclick="openModal()"
-                class="bg-[#8d5a30] text-white px-6 py-3 rounded-2xl font-black text-xs shadow-lg shadow-[#8d5a30]/20 flex items-center gap-2">
-                <span class="material-symbols-outlined text-sm">add</span>
-                ADD NEW ITEM
+        <!-- Tabs -->
+        <div class="flex gap-6 mb-8 border-b border-black/5 pb-4">
+            <button onclick="switchTab('menu')" id="tab-menu"
+                class="text-sm font-black text-[#8d5a30] transition-colors relative">
+                Menu Database
+                <div class="absolute -bottom-4 left-0 w-full h-1 bg-[#8d5a30] rounded-t-full"></div>
+            </button>
+            <button onclick="switchTab('orders')" id="tab-orders"
+                class="text-sm font-black text-slate-400 hover:text-slate-600 transition-colors relative">
+                Recent Orders (24h)
+                <div class="absolute -bottom-4 left-0 w-full h-1 bg-transparent rounded-t-full"></div>
             </button>
         </div>
 
-        <div id="items-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Items will be injected here -->
+        <!-- Menu Section -->
+        <div id="section-menu" class="block">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-2xl font-black">Menu Items</h2>
+                <button onclick="openModal()"
+                    class="bg-[#8d5a30] text-white px-6 py-3 rounded-2xl font-black text-xs shadow-lg shadow-[#8d5a30]/20 flex items-center gap-2 transition-transform active:scale-95">
+                    <span class="material-symbols-outlined text-sm">add</span>
+                    ADD NEW ITEM
+                </button>
+            </div>
+            <div id="items-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Items will be injected here -->
+            </div>
+        </div>
+
+        <!-- Orders Section -->
+        <div id="section-orders" class="hidden">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-2xl font-black">Live Order Stream</h2>
+                <button onclick="loadOrders()"
+                    class="bg-white text-[#8d5a30] px-5 py-3 rounded-2xl shadow-sm border border-black/5 font-black text-xs flex items-center gap-2 hover:shadow-md transition-all active:scale-95">
+                    <span class="material-symbols-outlined text-sm">refresh</span>
+                    REFRESH
+                </button>
+            </div>
+            <div id="orders-list" class="flex flex-col gap-4">
+                <!-- Orders will be injected here -->
+            </div>
         </div>
     </main>
 
@@ -114,11 +147,24 @@
     <script>
         if (localStorage.getItem('isAdmin') !== 'true') window.location.href = 'admin.html';
 
+        // Supabase is initialized in supabase_config.js
+
         let menuItems = [];
 
         async function loadMenu() {
-            const res = await fetch('/api/menu');
-            menuItems = await res.json();
+            const { data, error } = await supabaseClient
+                .from('menu')
+                .select('*');
+
+            if (error) {
+                console.error("Supabase error:", error);
+                // Fallback to local
+                const res = await fetch('/api/menu');
+                menuItems = await res.json();
+            } else {
+                menuItems = data || [];
+            }
+
             const grid = document.getElementById('items-grid');
 
             grid.innerHTML = menuItems.map((item) => `
@@ -179,16 +225,23 @@
                 flavor: document.getElementById('flavor').value
             };
 
-            const method = id ? 'PUT' : 'POST';
-            const url = id ? `/api/menu/${id}` : '/api/menu';
+            const { error } = await supabaseClient
+                .from('menu')
+                .upsert(data);
 
-            const res = await fetch(url, {
-                method: method,
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-
-            if (res.ok) {
+            if (!error) {
+                closeModal();
+                loadMenu();
+            } else {
+                alert("Error saving item to Supabase: " + error.message);
+                // Try local fallback
+                const method = id ? 'PUT' : 'POST';
+                const url = id ? `/api/menu/${id}` : '/api/menu';
+                await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
                 closeModal();
                 loadMenu();
             }
@@ -196,8 +249,18 @@
 
         async function deleteItem(id) {
             if (confirm(`Are you sure you want to remove this item?`)) {
-                const res = await fetch(`/api/menu/${id}`, { method: 'DELETE' });
-                if (res.ok) loadMenu();
+                const { error } = await supabaseClient
+                    .from('menu')
+                    .delete()
+                    .eq('id', id);
+
+                if (!error) {
+                    loadMenu();
+                } else {
+                    alert("Error deleting from Supabase: " + error.message);
+                    await fetch(`/api/menu/${id}`, { method: 'DELETE' });
+                    loadMenu();
+                }
             }
         }
 
@@ -206,7 +269,138 @@
             window.location.href = 'admin.html';
         }
 
+        // --- NEW TABS & ORDERS LOGIC ---
+
+        function switchTab(tab) {
+            const menuTab = document.getElementById('tab-menu');
+            const ordersTab = document.getElementById('tab-orders');
+            const menuSection = document.getElementById('section-menu');
+            const ordersSection = document.getElementById('section-orders');
+
+            if (tab === 'menu') {
+                menuTab.classList.replace('text-slate-400', 'text-[#8d5a30]');
+                menuTab.children[0].classList.replace('bg-transparent', 'bg-[#8d5a30]');
+                ordersTab.classList.replace('text-[#8d5a30]', 'text-slate-400');
+                ordersTab.children[0].classList.replace('bg-[#8d5a30]', 'bg-transparent');
+
+                menuSection.classList.remove('hidden');
+                menuSection.classList.add('block');
+                ordersSection.classList.remove('block');
+                ordersSection.classList.add('hidden');
+            } else {
+                ordersTab.classList.replace('text-slate-400', 'text-[#8d5a30]');
+                ordersTab.children[0].classList.replace('bg-transparent', 'bg-[#8d5a30]');
+                menuTab.classList.replace('text-[#8d5a30]', 'text-slate-400');
+                menuTab.children[0].classList.replace('bg-[#8d5a30]', 'bg-transparent');
+
+                ordersSection.classList.remove('hidden');
+                ordersSection.classList.add('block');
+                menuSection.classList.remove('block');
+                menuSection.classList.add('hidden');
+
+                loadOrders(); // Auto load when switching
+            }
+        }
+
+        async function loadOrders() {
+            const ordersList = document.getElementById('orders-list');
+            ordersList.innerHTML = '<div class="text-center py-10 opacity-50 font-bold text-sm">Analyzing order data...</div>';
+
+            const yesterday = new Date();
+            yesterday.setHours(yesterday.getHours() - 24);
+            const yesterdayIso = yesterday.toISOString();
+
+            const { data, error } = await supabaseClient
+                .from('orders')
+                .select('*')
+                .gte('created_at', yesterdayIso)
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                console.error("Error fetching orders:", error);
+                ordersList.innerHTML = `<div class="text-center py-10 text-red-500 font-bold text-sm">Failed to fetch orders: ${error.message}</div>`;
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                ordersList.innerHTML = `
+                    <div class="bg-white p-10 rounded-3xl border border-black/5 text-center flex flex-col items-center justify-center">
+                        <span class="material-symbols-outlined text-4xl text-slate-300 mb-2">inbox</span>
+                        <p class="font-bold text-slate-500">No orders placed in the last 24 hours.</p>
+                    </div>`;
+                return;
+            }
+
+            ordersList.innerHTML = data.map((order) => {
+                const date = new Date(order.created_at);
+                const timeString = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const dateString = date.toLocaleDateString();
+
+                let itemsHtml = '';
+                if (order.items && Array.isArray(order.items)) {
+                    itemsHtml = order.items.map(i => `<li class="flex justify-between text-sm py-1 border-b border-black/[0.03] last:border-0"><span>${i.quantity}x <span class="font-bold">${i.name}</span></span><span class="text-slate-500">₹${i.price * i.quantity}</span></li>`).join('');
+                }
+
+                // Color code status tag
+                let statusColor = 'bg-yellow-100 text-yellow-700'; // received
+                if (order.status === 'delivered') statusColor = 'bg-green-100 text-green-700';
+                if (order.status === 'baking' || order.status === 'processing') statusColor = 'bg-blue-100 text-blue-700';
+
+                return `
+                    <div class="bg-white p-6 rounded-3xl border border-black/5 shadow-sm">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h4 class="font-black text-lg">${order.customer_name}</h4>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="material-symbols-outlined text-[14px] text-slate-400">call</span>
+                                    <p class="text-xs font-bold text-slate-500">${order.phone}</p>
+                                </div>
+                                <div class="flex items-start gap-2 mt-1">
+                                    <span class="material-symbols-outlined text-[14px] text-slate-400">location_on</span>
+                                    <p class="text-xs text-slate-500 leading-tight max-w-[200px]">${order.address}</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <span class="px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-full ${statusColor}">${order.status}</span>
+                                <p class="text-[10px] text-slate-400 font-bold mt-2 uppercase tracking-widest">${timeString} • ${dateString}</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-[#f8f7f6] rounded-2xl p-4 mb-4">
+                            <h5 class="text-[10px] font-black uppercase tracking-widest text-[#8d5a30] mb-3">Order Formulation</h5>
+                            <ul class="flex flex-col gap-1">
+                                ${itemsHtml}
+                            </ul>
+                            <div class="flex justify-between items-center mt-3 pt-3 border-t border-black/5">
+                                <span class="font-bold text-sm text-slate-500">Total Charged</span>
+                                <span class="font-black text-lg text-primary">₹${order.total_amount}</span>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-2 justify-end">
+                            <button onclick="updateOrderStatus('${order.id}', 'processing')" class="px-4 py-2 bg-blue-50 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-widest hover:bg-blue-100 transition-colors">Accept / Process</button>
+                            <button onclick="updateOrderStatus('${order.id}', 'delivered')" class="px-4 py-2 bg-green-50 text-green-600 rounded-xl font-bold text-[10px] uppercase tracking-widest hover:bg-green-100 transition-colors">Mark Delivered</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function updateOrderStatus(orderId, newStatus) {
+            const { error } = await window.supabaseClient
+                .from('orders')
+                .update({ status: newStatus })
+                .eq('id', orderId);
+
+            if (error) {
+                alert("Failed to update status: " + error.message);
+            } else {
+                loadOrders(); // refresh view
+            }
+        }
+
         loadMenu();
+
     </script>
 </body>
 

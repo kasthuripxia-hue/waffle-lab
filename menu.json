@@ -19,10 +19,10 @@
   },
   {
     "id": "strawberry-milk-waffle",
-    "name": "Strawberry Bliss in a glass",
+    "name": "Strawberry Bliss Waffle",
     "price": 220,
     "desc": "Fresh strawberries & milk chocolate shavings.",
-    "img": "https://th.bing.com/th/id/OIP.NbaPM8UlUB7ADPMo9bMHMAHaHy?w=183&h=193&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3",
+    "img": "https://images.pexels.com/photos/6529788/pexels-photo-6529788.jpeg",
     "category": "waffle",
     "flavor": "milk"
   },
@@ -46,10 +46,10 @@
   },
   {
     "id": "honey-classic-waffle",
-    "name": "Honey Glazed",
+    "name": "Honey Glazed Waffle",
     "price": 169,
     "desc": "Traditional waffle with pure organic honey.",
-    "img": "https://images.pexels.com/photos/1126728/pexels-photo-1126728.jpeg",
+    "img": "data:image/webp;base64,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",
     "category": "waffle",
     "flavor": "classic"
   },
@@ -73,7 +73,7 @@
   },
   {
     "id": "vanilla-classic-cake",
-    "name": "Pure Vanilla Bean",
+    "name": "Pure Vanilla Bean Cake",
     "price": 249,
     "desc": "Classic vanilla sponge with bean frosting.",
     "img": "https://images.pexels.com/photos/140831/pexels-photo-140831.jpeg",
@@ -109,11 +109,11 @@
   },
   {
     "id": "caramel-milk-brownie",
-    "name": "Milk Caramel Swirl",
+    "name": "Biscoth Waffles",
     "price": 159,
     "desc": "Milk chocolate with salted caramel.",
-    "img": "https://images.pexels.com/photos/3026804/pexels-photo-3026804.jpeg",
-    "category": "brownie",
+    "img": "https://images.pexels.com/photos/34390517/pexels-photo-34390517.jpeg",
+    "category": "waffle",
     "flavor": "milk"
   },
   {
@@ -121,13 +121,13 @@
     "name": "Double Dark Lava",
     "price": 169,
     "desc": "Extra dark chocolate with a gooey center.",
-    "img": "https://images.pexels.com/photos/3026801/pexels-photo-3026801.jpeg",
+    "img": "https://images.pexels.com/photos/17192234/pexels-photo-17192234.jpeg",
     "category": "brownie",
     "flavor": "dark"
   },
   {
     "id": "item-1772365531324",
-    "name": "tripple chocolate waffle",
+    "name": "Tripple Chocolate Waffle",
     "price": 150,
     "category": "waffle",
     "img": "https://img.freepik.com/premium-photo/indulgent-triple-chocolate-waffle-rich-chocolate-flavors-decadent-toppings_1341210-78.jpg",

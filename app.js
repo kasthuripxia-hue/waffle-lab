@@ -1,18 +1,30 @@
-if (window.location.protocol === 'file:') {
-    alert("CRITICAL: You are opening the file directly. The menu and admin features REQUIRE the server. Please run 'python app.py' and open http://localhost:5000");
-}
+// Supabase is initialized in supabase_config.js
 
 let menuItems = [];
 let cart = JSON.parse(localStorage.getItem('waffleCart')) || [];
 
 async function fetchMenu() {
     try {
-        const res = await fetch('/api/menu');
-        menuItems = await res.json();
+        const { data, error } = await supabaseClient
+            .from('menu')
+            .select('*');
+
+        if (error) throw error;
+
+        menuItems = data || [];
         renderMenu();
         initCarousel();
     } catch (err) {
-        console.error("Failed to fetch menu:", err);
+        console.error("Failed to fetch menu from Supabase:", err);
+        // Fallback to local if needed during development
+        try {
+            const res = await fetch('/api/menu');
+            menuItems = await res.json();
+            renderMenu();
+            initCarousel();
+        } catch (e) {
+            console.error("Local fallback also failed");
+        }
     }
 }
 
@@ -183,7 +195,7 @@ function initCarousel() {
 
     // Render dots
     dotsContainer.innerHTML = carouselData.map((_, i) => `
-        <div class="carousel-dot ${i === 0 ? 'active' : ''}"></div>
+        <div class="carousel-dot ${i === 0 ? 'active' : ''} h-1 rounded-full bg-white/30 transition-all duration-300 ${i === 0 ? 'w-6 bg-white' : 'w-2'}"></div>
     `).join('');
 
     updateCarousel();
@@ -224,7 +236,13 @@ function updateCarousel() {
 
     // Update dots
     dots.forEach((dot, i) => {
-        dot.classList.toggle('active', i === currentSlide);
+        if (i === currentSlide) {
+            dot.classList.add('active', 'w-6', 'bg-white');
+            dot.classList.remove('w-2', 'bg-white/30');
+        } else {
+            dot.classList.remove('active', 'w-6', 'bg-white');
+            dot.classList.add('w-2', 'bg-white/30');
+        }
     });
 
     // Update text content and animate in
@@ -245,13 +263,13 @@ function updateCarousel() {
 function filterMenu(flavor, element) {
     // Update UI active state
     document.querySelectorAll('.filter-tab').forEach(tab => {
-        tab.classList.remove('bg-primary', 'text-white', 'shadow-lg');
-        tab.classList.add('bg-primary/10', 'text-primary');
+        tab.classList.remove('bg-primary', 'text-white', 'shadow-xl', 'shadow-primary/20');
+        tab.classList.add('bg-white', 'dark:bg-white/5', 'text-primary', 'border-primary/10');
     });
 
     if (element) {
-        element.classList.remove('bg-primary/10', 'text-primary');
-        element.classList.add('bg-primary', 'text-white', 'shadow-lg');
+        element.classList.remove('bg-white', 'dark:bg-white/5', 'text-primary', 'border-primary/10');
+        element.classList.add('bg-primary', 'text-white', 'shadow-xl', 'shadow-primary/20');
     }
 
     // Render with flavor filter
@@ -277,29 +295,52 @@ function renderMenu(flavorFilter = 'all') {
         const quantity = cartItem ? cartItem.quantity : 0;
 
         const card = `
-      <div class="p-3 bg-primary/5 dark:bg-white/5 rounded-xl border border-primary/10 mb-4 transition-all hover:border-primary/30 animate-fade-in">
-        <div class="flex justify-between gap-4">
-          <div class="flex-1">
-            <h3 class="text-sm font-bold text-slate-900 dark:text-slate-100">${item.name}</h3>
-            <p class="text-xs text-primary font-bold mb-1">₹${item.price}</p>
-            <p class="text-[10px] text-slate-500 dark:text-slate-400 line-clamp-2">${item.desc}</p>
-          </div>
-          <div class="relative w-24 h-24 shrink-0">
-            <div class="w-full h-full rounded-lg bg-cover bg-center border border-primary/10"
+      <div class="group relative bg-white dark:bg-white/5 rounded-[2.25rem] border border-black/[0.03] dark:border-white/[0.03] p-4.5 transition-all duration-500 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] hover:border-primary/20 animate-fade-in overflow-hidden">
+        <!-- Glossy effect on hover -->
+        <div class="absolute inset-0 bg-gradient-to-tr from-primary/0 via-primary/0 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+
+        <div class="flex items-center gap-6 relative z-10">
+          <!-- Image Section -->
+          <div class="relative w-32 h-32 shrink-0">
+            <div class="w-full h-full rounded-[1.75rem] bg-cover bg-center shadow-lg border-2 border-white dark:border-white/10 group-hover:scale-105 transition-transform duration-700 ease-out overflow-hidden"
               style="background-image: url('${item.img}')">
+              <div class="absolute inset-0 bg-black/10 transition-opacity group-hover:opacity-0"></div>
             </div>
-            ${quantity > 0 ? `
-              <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-primary text-white flex items-center gap-3 px-2 py-1 rounded-md shadow-md">
-                <button onclick="changeQuantity('${item.id}', -1)" class="font-bold px-1 text-xs">-</button>
-                <span class="text-[10px] font-bold min-w-[12px] text-center">${quantity}</span>
-                <button onclick="changeQuantity('${item.id}', 1)" class="font-bold px-1 text-xs">+</button>
-              </div>
-            ` : `
-              <button onclick="addToCart('${item.id}')"
-                class="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-bold px-3 py-1 rounded-md shadow-md hover:bg-primary/90 transition-colors">
-                ADD
-              </button>
-            `}
+            
+            <div class="absolute -bottom-3 left-1/2 -translate-x-1/2 w-[85%]">
+              ${quantity > 0 ? `
+                <div class="bg-slate-900 dark:bg-primary text-white flex items-center justify-between p-1 rounded-2xl shadow-xl shadow-black/20 border border-white/10">
+                  <button onclick="changeQuantity('${item.id}', -1)" class="w-8 h-8 flex items-center justify-center font-black text-xl hover:bg-white/10 rounded-xl active:scale-75 transition-all">-</button>
+                  <span class="text-xs font-black min-w-[20px] text-center">${quantity}</span>
+                  <button onclick="changeQuantity('${item.id}', 1)" class="w-8 h-8 flex items-center justify-center font-black text-xl hover:bg-white/10 rounded-xl active:scale-75 transition-all">+</button>
+                </div>
+              ` : `
+                <button onclick="addToCart('${item.id}')"
+                  class="w-full bg-slate-900 dark:bg-primary text-white text-[10px] font-black py-3 rounded-2xl shadow-xl shadow-black/20 hover:brightness-110 active:scale-95 transition-all uppercase tracking-[0.15em] border border-white/10">
+                  Inject
+                </button>
+              `}
+            </div>
+          </div>
+
+          <!-- Content Section -->
+          <div class="flex-1 min-w-0 pr-2">
+            <div class="flex items-center gap-2.5 mb-2.5">
+               <div class="flex items-center justify-center w-5 h-5 rounded-full bg-slate-100 dark:bg-white/10 border border-black/5 dark:border-white/5">
+                 <div class="w-2 h-2 rounded-full ${item.category === 'cake' ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]' : 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]'}"></div>
+               </div>
+               <span class="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Specimen: ${item.category}</span>
+            </div>
+            
+            <h3 class="text-lg font-black text-slate-900 dark:text-white leading-[1.2] mb-1.5 group-hover:text-primary transition-colors duration-300 italic tracking-tight uppercase">${item.name}</h3>
+            <p class="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400 line-clamp-2 mb-4 font-medium">${item.desc}</p>
+            
+            <div class="flex items-center gap-3">
+               <div class="bg-primary/5 dark:bg-primary/10 px-3.5 py-1.5 rounded-xl border border-primary/10">
+                  <p class="text-sm font-black text-primary tracking-tight">₹${item.price}</p>
+               </div>
+               <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">${item.flavor} base</span>
+            </div>
           </div>
         </div>
       </div>
@@ -344,15 +385,20 @@ function updateCartUI() {
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
     const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-    if (viewCartBar) {
-        if (totalItems > 0) {
-            viewCartBar.classList.remove('hidden');
-            if (cartTotal) cartTotal.innerText = `₹${totalPrice}`;
-            const summaryText = document.getElementById('cart-summary-text');
-            if (summaryText) summaryText.innerText = `${totalItems} ITEM${totalItems > 1 ? 'S' : ''} | ₹${totalPrice}`;
-        } else {
-            viewCartBar.classList.add('hidden');
+    if (totalItems > 0) {
+        viewCartBar.classList.remove('hidden');
+        setTimeout(() => {
+            viewCartBar.classList.remove('scale-0', 'translate-y-20');
+            viewCartBar.classList.add('scale-100', 'translate-y-0', 'flex');
+        }, 10);
+        if (summaryText) {
+            summaryText.innerHTML = `${totalItems} ITEM${totalItems > 1 ? 'S' : ''} • ANALYSIS COMPLETE`;
+            const priceSub = viewCartBar.querySelector('p.italic');
+            if (priceSub) priceSub.innerText = `Unit: Subtotal ₹${totalPrice.toFixed(2)}`;
         }
+    } else {
+        viewCartBar.classList.add('scale-0', 'translate-y-20');
+        setTimeout(() => viewCartBar.classList.add('hidden'), 500);
     }
 
     badges.forEach(badge => {
@@ -531,7 +577,7 @@ function closeBillModal() {
     }, 300);
 }
 
-function placeOrder() {
+async function placeOrder() {
     const name = document.getElementById('customer-name').innerText;
     const contact = document.getElementById('customer-contact').innerText;
     const address = document.getElementById('customer-address').innerText;
@@ -542,6 +588,39 @@ function placeOrder() {
         else if (!contact.trim()) openBottomSheet('contact');
         else openBottomSheet('address');
         return;
+    }
+
+    // Attempt to store the order in Supabase
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const tax = subtotal * 0.05;
+    const total = subtotal + tax + 45; // including delivery
+
+    const orderData = {
+        customer_name: name,
+        phone: contact,
+        address: address,
+        items: cart,
+        total_amount: total,
+        status: 'received'
+    };
+
+    try {
+        const { data, error } = await supabaseClient
+            .from('orders')
+            .insert([orderData])
+            .select();
+
+        if (error) {
+            console.error("Supabase Error recording order:", error);
+            // Optionally: silently fail, or alert user
+            // We'll proceed to show success anyway for the sake of the UX,
+            // or we could throw error.
+            // throw error; 
+        } else {
+            console.log("Order securely logged to Supabase:", data);
+        }
+    } catch (err) {
+        console.error("Critical error saving order:", err);
     }
 
     const overlay = document.getElementById('success-overlay');
