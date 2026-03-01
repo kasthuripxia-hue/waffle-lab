@@ -181,7 +181,7 @@
                     </div>
                 </div>
             </div>
-            <div class="px-4 mb-6">
+            <div id="filter-section" class="px-4 mb-6">
                 <div class="flex gap-2 overflow-x-auto hide-scrollbar pb-2">
                     <button onclick="filterMenu('all', this)"
                         class="filter-tab shrink-0 px-5 py-2 rounded-full text-xs font-bold transition-all duration-300 bg-primary text-white shadow-lg">
@@ -201,7 +201,7 @@
                     </button>
                 </div>
             </div>
-            <section class="px-4 mb-8">
+            <section id="menu-section" class="px-4 mb-8">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-bold">Full Menu</h3>
                 </div>
@@ -227,15 +227,13 @@
             </a>
         </div>
         <nav
-            class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-background-light/90 dark:bg-background-dark/95 backdrop-blur-lg border-t border-primary/10 px-6 py-2 flex items-center justify-between z-50">
-            <a class="flex flex-col items-center gap-1 text-primary" href="index.html">
+            class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-background-light/90 dark:bg-background-dark/95 backdrop-blur-lg border-t border-primary/10 px-10 py-2 flex items-center justify-between z-50">
+            <a id="nav-home" class="flex flex-col items-center gap-1 text-primary" href="#"
+                onclick="showSection('home'); return false;">
                 <span class="material-symbols-outlined font-variation-fill">home</span>
                 <span class="text-[10px] font-bold" data-lang="home">Home</span>
             </a>
-            <a class="flex flex-col items-center gap-1 opacity-50" href="#">
-                <span class="material-symbols-outlined">auto_awesome</span>
-                <span class="text-[10px] font-bold" data-lang="offers">Offers</span>
-            </a>
+
             <div class="relative -mt-10">
                 <a href="checkout.html"
                     class="w-14 h-14 bg-primary rounded-full shadow-lg shadow-primary/40 border-4 border-background-light dark:border-background-dark flex items-center justify-center text-white relative">
@@ -244,10 +242,7 @@
                         class="cart-badge hidden absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-background-dark transition-transform duration-300">0</span>
                 </a>
             </div>
-            <a class="flex flex-col items-center gap-1 opacity-50" href="#">
-                <span class="material-symbols-outlined">receipt_long</span>
-                <span class="text-[10px] font-bold" data-lang="orders">Orders</span>
-            </a>
+
             <a class="flex flex-col items-center gap-1 opacity-50" href="#" onclick="openSettings(); return false;">
                 <span class="material-symbols-outlined">settings</span>
                 <span class="text-[10px] font-bold" data-lang="settings">Settings</span>

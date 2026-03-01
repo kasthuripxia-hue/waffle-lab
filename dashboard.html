@@ -27,23 +27,12 @@
     </header>
 
     <main class="max-w-4xl mx-auto p-6">
-        <div class="flex gap-4 mb-8 bg-white p-2 rounded-2xl border border-black/5">
-            <button onclick="toggleView('menu')" id="btn-menu"
-                class="flex-1 py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all bg-[#8d5a30] text-white">
-                Menu Items
-            </button>
-            <button onclick="toggleView('offers')" id="btn-offers"
-                class="flex-1 py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all text-slate-400 hover:bg-slate-50">
-                Offers List
-            </button>
-        </div>
-
         <div class="flex justify-between items-center mb-8">
-            <h2 id="view-title" class="text-2xl font-black">Menu Items</h2>
+            <h2 class="text-2xl font-black">Menu Items</h2>
             <button onclick="openModal()"
                 class="bg-[#8d5a30] text-white px-6 py-3 rounded-2xl font-black text-xs shadow-lg shadow-[#8d5a30]/20 flex items-center gap-2">
                 <span class="material-symbols-outlined text-sm">add</span>
-                ADD NEW <span id="add-text">ITEM</span>
+                ADD NEW ITEM
             </button>
         </div>
 
@@ -66,18 +55,17 @@
             <form id="item-form" class="space-y-4">
                 <input type="hidden" id="edit-id">
                 <div>
-                    <label id="label-name"
-                        class="block text-[10px] font-black uppercase tracking-widest text-[#8d5a30] mb-2">Item
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-[#8d5a30] mb-2">Item
                         Name</label>
                     <input type="text" id="name" required
                         class="w-full bg-[#f8f7f6] border-none rounded-2xl px-5 py-4 focus:ring-2 focus:ring-[#8d5a30]/20 transition-all font-medium">
                 </div>
 
-                <div id="menu-only-fields" class="grid grid-cols-3 gap-4">
+                <div class="grid grid-cols-3 gap-4">
                     <div>
                         <label class="block text-[10px] font-black uppercase tracking-widest text-[#8d5a30] mb-2">Price
                             (₹)</label>
-                        <input type="number" id="price"
+                        <input type="number" id="price" required
                             class="w-full bg-[#f8f7f6] border-none rounded-2xl px-5 py-4 focus:ring-2 focus:ring-[#8d5a30]/20 transition-all font-medium">
                     </div>
                     <div>
@@ -100,13 +88,6 @@
                             <option value="milk">Milk</option>
                         </select>
                     </div>
-                </div>
-
-                <div id="offer-only-fields" class="hidden">
-                    <label class="block text-[10px] font-black uppercase tracking-widest text-[#8d5a30] mb-2">Offer Tag
-                        (e.g. 50% OFF)</label>
-                    <input type="text" id="tag" placeholder="Save ₹50"
-                        class="w-full bg-[#f8f7f6] border-none rounded-2xl px-5 py-4 focus:ring-2 focus:ring-[#8d5a30]/20 transition-all font-medium">
                 </div>
 
                 <div>
@@ -133,51 +114,20 @@
     <script>
         if (localStorage.getItem('isAdmin') !== 'true') window.location.href = 'admin.html';
 
-        let currentView = 'menu';
+        let menuItems = [];
 
-        function toggleView(view) {
-            currentView = view;
-            const menuBtn = document.getElementById('btn-menu');
-            const offersBtn = document.getElementById('btn-offers');
-            const title = document.getElementById('view-title');
-            const addText = document.getElementById('add-text');
-
-            if (view === 'menu') {
-                menuBtn.classList.add('bg-[#8d5a30]', 'text-white');
-                menuBtn.classList.remove('text-slate-400');
-                offersBtn.classList.remove('bg-[#8d5a30]', 'text-white');
-                offersBtn.classList.add('text-slate-400');
-                title.innerText = 'Menu Items';
-                addText.innerText = 'ITEM';
-            } else {
-                offersBtn.classList.add('bg-[#8d5a30]', 'text-white');
-                offersBtn.classList.remove('text-slate-400');
-                menuBtn.classList.remove('bg-[#8d5a30]', 'text-white');
-                menuBtn.classList.add('text-slate-400');
-                title.innerText = 'Offers List';
-                addText.innerText = 'OFFER';
-            }
-            loadData();
-        }
-
-        let currentItems = [];
-
-        async function loadData() {
-            const url = currentView === 'menu' ? '/api/menu' : '/api/offers';
-            const res = await fetch(url);
-            const items = await res.json();
-            currentItems = items;
+        async function loadMenu() {
+            const res = await fetch('/api/menu');
+            menuItems = await res.json();
             const grid = document.getElementById('items-grid');
 
-            grid.innerHTML = items.map((item, index) => `
+            grid.innerHTML = menuItems.map((item) => `
                 <div class="bg-white p-4 rounded-3xl border border-black/5 flex gap-4 items-center shadow-sm hover:shadow-md transition-shadow">
                     <img src="${item.img}" class="size-20 rounded-2xl object-cover shrink-0">
                     <div class="flex-1 min-w-0">
                         <h4 class="font-black text-sm truncate">${item.name}</h4>
-                        ${currentView === 'menu'
-                    ? `<p class="text-[#8d5a30] font-bold text-xs">₹${item.price}</p>
-                               <p class="text-[10px] text-slate-400 uppercase font-bold tracking-widest">${item.category}</p>`
-                    : `<p class="text-green-600 font-bold text-xs">${item.tag || 'PROMO'}</p>`}
+                        <p class="text-[#8d5a30] font-bold text-xs">₹${item.price}</p>
+                        <p class="text-[10px] text-slate-400 uppercase font-bold tracking-widest">${item.category}</p>
                     </div>
                     <div class="flex gap-2">
                         <button onclick="openModal('${item.id}')" class="bg-blue-50 text-blue-500 size-10 rounded-xl flex items-center justify-center">
@@ -193,40 +143,22 @@
 
         function openModal(id = null) {
             const modal = document.getElementById('modal');
-            const item = id ? currentItems.find(i => i.id === id) : null;
+            const item = id ? menuItems.find(i => i.id === id) : null;
             modal.classList.remove('hidden');
-            const menuFields = document.getElementById('menu-only-fields');
-            const offerFields = document.getElementById('offer-only-fields');
-            const labelName = document.getElementById('label-name');
-
-            if (currentView === 'menu') {
-                menuFields.classList.remove('hidden');
-                offerFields.classList.add('hidden');
-                labelName.innerText = 'Item Name';
-            } else {
-                menuFields.classList.add('hidden');
-                offerFields.classList.remove('hidden');
-                labelName.innerText = 'Offer Title';
-            }
 
             if (item) {
                 document.getElementById('edit-id').value = item.id;
                 document.getElementById('name').value = item.name;
                 document.getElementById('img').value = item.img;
                 document.getElementById('desc').value = item.desc;
-
-                if (currentView === 'menu') {
-                    document.getElementById('price').value = item.price;
-                    document.getElementById('category').value = item.category;
-                    document.getElementById('flavor').value = item.flavor || 'classic';
-                } else {
-                    document.getElementById('tag').value = item.tag || '';
-                }
-                document.getElementById('modal-title').innerText = 'EDIT ' + (currentView === 'menu' ? 'ITEM' : 'OFFER');
+                document.getElementById('price').value = item.price;
+                document.getElementById('category').value = item.category;
+                document.getElementById('flavor').value = item.flavor || 'classic';
+                document.getElementById('modal-title').innerText = 'EDIT ITEM';
             } else {
                 document.getElementById('item-form').reset();
                 document.getElementById('edit-id').value = '';
-                document.getElementById('modal-title').innerText = 'ADD ' + (currentView === 'menu' ? 'ITEM' : 'OFFER');
+                document.getElementById('modal-title').innerText = 'ADD ITEM';
             }
         }
 
@@ -237,24 +169,18 @@
         document.getElementById('item-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const id = document.getElementById('edit-id').value;
-            let data = {
-                id: id || (currentView === 'menu' ? 'item-' : 'offer-') + Date.now(),
+            const data = {
+                id: id || 'item-' + Date.now(),
                 name: document.getElementById('name').value,
                 img: document.getElementById('img').value,
-                desc: document.getElementById('desc').value
+                desc: document.getElementById('desc').value,
+                price: parseFloat(document.getElementById('price').value),
+                category: document.getElementById('category').value,
+                flavor: document.getElementById('flavor').value
             };
 
-            if (currentView === 'menu') {
-                data.price = parseFloat(document.getElementById('price').value);
-                data.category = document.getElementById('category').value;
-                data.flavor = document.getElementById('flavor').value;
-            } else {
-                data.tag = document.getElementById('tag').value;
-            }
-
             const method = id ? 'PUT' : 'POST';
-            let url = currentView === 'menu' ? '/api/menu' : '/api/offers';
-            if (id) url += `/${id}`;
+            const url = id ? `/api/menu/${id}` : '/api/menu';
 
             const res = await fetch(url, {
                 method: method,
@@ -264,16 +190,14 @@
 
             if (res.ok) {
                 closeModal();
-                loadData();
+                loadMenu();
             }
         });
 
         async function deleteItem(id) {
-            const type = currentView === 'menu' ? 'item' : 'offer';
-            if (confirm(`Are you sure you want to remove this ${type}?`)) {
-                const url = currentView === 'menu' ? `/api/menu/${id}` : `/api/offers/${id}`;
-                const res = await fetch(url, { method: 'DELETE' });
-                if (res.ok) loadData();
+            if (confirm(`Are you sure you want to remove this item?`)) {
+                const res = await fetch(`/api/menu/${id}`, { method: 'DELETE' });
+                if (res.ok) loadMenu();
             }
         }
 
@@ -282,7 +206,7 @@
             window.location.href = 'admin.html';
         }
 
-        loadData();
+        loadMenu();
     </script>
 </body>
 

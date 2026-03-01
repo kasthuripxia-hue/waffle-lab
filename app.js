@@ -21,17 +21,17 @@ let currentTheme = localStorage.getItem('waffleTheme') || '#8d5a30';
 
 const translations = {
     english: {
-        home: "Home", offers: "Offers", orders: "Orders", settings: "Settings",
+        home: "Home", orders: "Orders", settings: "Settings",
         appearance: "Appearance", light: "Light", dark: "Dark", theme: "Theme Color",
         language: "Language", done: "DONE", admin_login: "Administrative Login"
     },
     tamil: {
-        home: "முகப்பு", offers: "சலுகைகள்", orders: "ஆர்டர்கள்", settings: "அமைப்புகள்",
+        home: "முகப்பு", orders: "ஆர்டர்கள்", settings: "அமைப்புகள்",
         appearance: "தோற்றம்", light: "ஒளி", dark: "இருள்", theme: "தீம் நிறம்",
         language: "மொழி", done: "முடிந்தது", admin_login: "நிர்வாகி உள்நுழைவு"
     },
     hindi: {
-        home: "होम", offers: "ऑफर", orders: "ऑर्डर", settings: "सेटिंग्स",
+        home: "होम", orders: "ऑर्डर", settings: "सेटिंग्स",
         appearance: "दिखावट", light: "लाइट", dark: "डार्क", theme: "थीम रंग",
         language: "भाषा", done: "हो गया", admin_login: "एडमिन लॉगिन"
     }
@@ -66,6 +66,23 @@ document.addEventListener('DOMContentLoaded', () => {
         setMode(localStorage.getItem('waffleMode'));
     }
 });
+
+function showSection(section) {
+    const homeSect = document.getElementById('menu-section');
+    const heroSect = document.getElementById('hero-carousel');
+    const filterSect = document.getElementById('filter-section');
+    const navHome = document.getElementById('nav-home');
+
+    if (section === 'home') {
+        if (homeSect) homeSect.classList.remove('hidden');
+        if (heroSect) heroSect.parentElement.classList.remove('hidden');
+        if (filterSect) filterSect.classList.remove('hidden');
+        if (navHome) {
+            navHome.classList.add('text-primary');
+            navHome.classList.remove('opacity-50');
+        }
+    }
+}
 
 function openSettings() {
     const overlay = document.getElementById('settings-overlay');
