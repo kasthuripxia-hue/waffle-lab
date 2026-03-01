@@ -1,146 +1,161 @@
-const menuItems = [
-  // Waffles
-  {
-    id: "belgian-classic",
-    name: "Classic Belgian Waffle",
-    price: 179,
-    desc: "Golden waffle with maple syrup.",
-    img: "https://images.pexels.com/photos/376464/pexels-photo-376464.jpeg"
-  },
-  {
-    id: "triple-dark-waffle",
-    name: "Triple Dark Chocolate",
-    price: 250,
-    desc: "Dark chocolate ganache overload.",
-    img: "https://images.pexels.com/photos/291528/pexels-photo-291528.jpeg"
-  },
-  {
-    id: "strawberry-bliss",
-    name: "Strawberry Bliss",
-    price: 120,
-    desc: "Fresh strawberries & whipped cream.",
-    img: "https://images.pexels.com/photos/3026808/pexels-photo-3026808.jpeg"
-  },
-  {
-    id: "nutella-crunch",
-    name: "Nutella Crunch",
-    price: 179,
-    desc: "Nutella with roasted hazelnuts.",
-    img: "https://images.pexels.com/photos/1099680/pexels-photo-1099680.jpeg"
-  },
-  {
-    id: "oreo-madness",
-    name: "Oreo Madness",
-    price: 350,
-    desc: "Loaded with Oreo crumble.",
-    img: "https://images.pexels.com/photos/45202/waffle-dessert-sweet-breakfast-45202.jpeg"
-  },
-  {
-    id: "honey-glazed",
-    name: "Honey Glazed",
-    price: 169,
-    desc: "Traditional waffle with pure organic honey.",
-    img: "https://images.pexels.com/photos/1126728/pexels-photo-1126728.jpeg"
-  },
-  // Cakes
-  {
-    id: "midnight-truffle",
-    name: "Midnight Chocolate Cake",
-    price: 299,
-    desc: "Rich dark chocolate truffle layers.",
-    img: "https://images.pexels.com/photos/132694/pexels-photo-132694.jpeg",
-    category: "cake",
-    flavor: "dark"
-  },
-  {
-    id: "milk-ribbon-cake",
-    name: "Milk Chocolate Ribbon",
-    price: 279,
-    desc: "Silky milk chocolate silk cake.",
-    img: "https://images.pexels.com/photos/2144112/pexels-photo-2144112.jpeg",
-    category: "cake",
-    flavor: "milk"
-  },
-  {
-    id: "vanilla-classic-cake",
-    name: "Pure Vanilla Bean",
-    price: 249,
-    desc: "Classic vanilla sponge with bean frosting.",
-    img: "https://images.pexels.com/photos/140831/pexels-photo-140831.jpeg",
-    category: "cake",
-    flavor: "classic"
-  },
-  {
-    id: "dark-gateau",
-    name: "Dark Forest Gateau",
-    price: 320,
-    desc: "Cherries and dark chocolate shavings.",
-    img: "https://images.pexels.com/photos/1854652/pexels-photo-1854652.jpeg",
-    category: "cake",
-    flavor: "dark"
-  },
-  // Brownies
-  {
-    id: "walnut-dark-brownie",
-    name: "Dark Walnut Brownie",
-    price: 149,
-    desc: "Bittersweet cocoa with crunchy walnuts.",
-    img: "https://images.pexels.com/photos/3026804/pexels-photo-3026804.jpeg",
-    category: "brownie",
-    flavor: "dark"
-  },
-  {
-    id: "fudgy-classic-brownie",
-    name: "Classic Fudgy",
-    price: 129,
-    desc: "Traditional melt-in-your-mouth brownie.",
-    img: "https://images.pexels.com/photos/2067396/pexels-photo-2067396.jpeg",
-    category: "brownie",
-    flavor: "classic"
-  },
-  {
-    id: "caramel-milk-brownie",
-    name: "Milk Caramel Swirl",
-    price: 159,
-    desc: "Milk chocolate with salted caramel.",
-    img: "https://images.pexels.com/photos/3026804/pexels-photo-3026804.jpeg",
-    category: "brownie",
-    flavor: "milk"
-  },
-  {
-    id: "double-dark-brownie",
-    name: "Double Dark Lava",
-    price: 169,
-    desc: "Extra dark chocolate with a gooey center.",
-    img: "https://images.pexels.com/photos/3026801/pexels-photo-3026801.jpeg",
-    category: "brownie",
-    flavor: "dark"
-  }
-];
+if (window.location.protocol === 'file:') {
+    alert("CRITICAL: You are opening the file directly. The menu and admin features REQUIRE the server. Please run 'python app.py' and open http://localhost:5000");
+}
 
+let menuItems = [];
 let cart = JSON.parse(localStorage.getItem('waffleCart')) || [];
+
+async function fetchMenu() {
+    try {
+        const res = await fetch('/api/menu');
+        menuItems = await res.json();
+        renderMenu();
+        initCarousel();
+    } catch (err) {
+        console.error("Failed to fetch menu:", err);
+    }
+}
+
+let currentLang = localStorage.getItem('waffleLang') || 'english';
+let currentTheme = localStorage.getItem('waffleTheme') || '#8d5a30';
+
+const translations = {
+    english: {
+        home: "Home", offers: "Offers", orders: "Orders", settings: "Settings",
+        appearance: "Appearance", light: "Light", dark: "Dark", theme: "Theme Color",
+        language: "Language", done: "DONE", admin_login: "Administrative Login"
+    },
+    tamil: {
+        home: "முகப்பு", offers: "சலுகைகள்", orders: "ஆர்டர்கள்", settings: "அமைப்புகள்",
+        appearance: "தோற்றம்", light: "ஒளி", dark: "இருள்", theme: "தீம் நிறம்",
+        language: "மொழி", done: "முடிந்தது", admin_login: "நிர்வாகி உள்நுழைவு"
+    },
+    hindi: {
+        home: "होम", offers: "ऑफर", orders: "ऑर्डर", settings: "सेटिंग्स",
+        appearance: "दिखावट", light: "लाइट", dark: "डार्क", theme: "थीम रंग",
+        language: "भाषा", done: "हो गया", admin_login: "एडमिन लॉगिन"
+    }
+};
+
+const themes = [
+    '#8d5a30', '#e63946', '#f1faee', '#a8dadc', '#457b9d',
+    '#1d3557', '#2a9d8f', '#e9c46a', '#f4a261', '#e76f51',
+    '#6d597a', '#b56576', '#e56b6f', '#eaac8b', '#355070'
+];
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log('The Waffle Lab initialized');
-    renderMenu();
+    applyTheme(currentTheme);
+    applyLang(currentLang);
+    renderThemeColors();
+
+    // Initial fetch
+    fetchMenu();
+
     renderCheckout();
     updateCartUI();
-    initCarousel();
+
+    // Check system preference if no mode saved
+    if (!localStorage.getItem('waffleMode')) {
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            setMode('dark');
+        } else {
+            setMode('light');
+        }
+    } else {
+        setMode(localStorage.getItem('waffleMode'));
+    }
 });
 
+function openSettings() {
+    const overlay = document.getElementById('settings-overlay');
+    const sheet = document.getElementById('settings-sheet');
+    overlay.classList.remove('hidden');
+    setTimeout(() => sheet.classList.remove('translate-y-full'), 10);
+}
+
+function closeSettings() {
+    const overlay = document.getElementById('settings-overlay');
+    const sheet = document.getElementById('settings-sheet');
+    sheet.classList.add('translate-y-full');
+    setTimeout(() => overlay.classList.add('hidden'), 300);
+}
+
+function setMode(mode) {
+    const html = document.documentElement;
+    if (mode === 'dark') {
+        html.classList.add('dark');
+    } else {
+        html.classList.remove('dark');
+    }
+    localStorage.setItem('waffleMode', mode);
+
+    // Update button styles
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+        const isDark = btn.querySelector('span').innerText === 'dark_mode';
+        if ((isDark && mode === 'dark') || (!isDark && mode === 'light')) {
+            btn.classList.add('border-primary', 'bg-primary/5');
+        } else {
+            btn.classList.remove('border-primary', 'bg-primary/5');
+        }
+    });
+}
+
+function renderThemeColors() {
+    const container = document.getElementById('theme-colors');
+    if (!container) return;
+    container.innerHTML = themes.map(color => `
+        <button onclick="applyTheme('${color}')" 
+            class="w-full aspect-square rounded-full border-2 transition-all transform active:scale-90" 
+            style="background-color: ${color}; border-color: ${currentTheme === color ? 'white' : 'transparent'}; box-shadow: ${currentTheme === color ? '0 0 0 2px ' + color : 'none'}">
+        </button>
+    `).join('');
+}
+
+function applyTheme(color) {
+    currentTheme = color;
+    document.documentElement.style.setProperty('--primary-color', color);
+    localStorage.setItem('waffleTheme', color);
+    renderThemeColors();
+}
+
+function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('waffleLang', lang);
+    applyLang(lang);
+}
+
+function applyLang(lang) {
+    const dict = translations[lang];
+    document.querySelectorAll('[data-lang]').forEach(el => {
+        const key = el.getAttribute('data-lang');
+        if (dict[key]) el.innerText = dict[key];
+    });
+
+    // Update active lang button
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        if (btn.innerText.toLowerCase().includes(lang) || (lang === 'tamil' && btn.innerText === 'தமிழ்') || (lang === 'hindi' && btn.innerText === 'हिन्दी')) {
+            btn.classList.add('bg-primary', 'text-white', 'border-primary');
+        } else {
+            btn.classList.remove('bg-primary', 'text-white', 'border-primary');
+        }
+    });
+}
+
 let currentSlide = 0;
-const carouselData = [
-    { title: "Gourmet Belgian", desc: "Crafted with love and artisanal dough.", img: menuItems[0].img },
-    { title: "Chocolate Overload", desc: "A symphony of three dark chocolate textures.", img: menuItems[1].img },
-    { title: "Berry Fresh", desc: "Topped with hand-picked summer strawberries.", img: menuItems[2].img },
-    { title: "Velvet Ribbon", desc: "Silky layers of milk chocolate cake.", img: menuItems[7].img },
-    { title: "Dark Walnut", desc: "Rich bittersweet cocoa with a crunch.", img: menuItems[10].img }
-];
+let carouselData = [];
 
 function initCarousel() {
     const track = document.getElementById('carousel-track');
     const dotsContainer = document.getElementById('carousel-dots');
-    if (!track) return;
+    if (!track || menuItems.length === 0) return;
+
+    // Use first few items for carousel
+    carouselData = menuItems.slice(0, 5).map(item => ({
+        title: item.name,
+        desc: item.desc,
+        img: item.img
+    }));
 
     // Render slides
     track.innerHTML = carouselData.map(slide => `
@@ -155,7 +170,7 @@ function initCarousel() {
     `).join('');
 
     updateCarousel();
-    
+
     // Auto slide
     setInterval(() => {
         currentSlide = (currentSlide + 1) % carouselData.length;
@@ -169,7 +184,7 @@ function updateCarousel() {
     const desc = document.getElementById('carousel-desc');
     const dots = document.querySelectorAll('.carousel-dot');
     const slides = document.querySelectorAll('.carousel-slide img');
-    
+
     if (!track) return;
 
     // Slide track
@@ -199,10 +214,10 @@ function updateCarousel() {
     setTimeout(() => {
         title.innerText = carouselData[currentSlide].title;
         desc.innerText = carouselData[currentSlide].desc;
-        
+
         title.classList.remove('opacity-0', 'translate-y-2');
         title.classList.add('opacity-100', 'translate-y-0');
-        
+
         setTimeout(() => {
             desc.classList.remove('opacity-0', 'translate-y-2');
             desc.classList.add('opacity-100', 'translate-y-0');
@@ -216,7 +231,7 @@ function filterMenu(flavor, element) {
         tab.classList.remove('bg-primary', 'text-white', 'shadow-lg');
         tab.classList.add('bg-primary/10', 'text-primary');
     });
-    
+
     if (element) {
         element.classList.remove('bg-primary/10', 'text-primary');
         element.classList.add('bg-primary', 'text-white', 'shadow-lg');
@@ -231,8 +246,8 @@ function renderMenu(flavorFilter = 'all') {
     if (!container) return;
 
     container.innerHTML = '';
-    const filteredItems = flavorFilter === 'all' 
-        ? menuItems 
+    const filteredItems = flavorFilter === 'all'
+        ? menuItems
         : menuItems.filter(item => item.flavor === flavorFilter);
 
     if (filteredItems.length === 0) {
@@ -327,7 +342,7 @@ function updateCartUI() {
         const oldCount = parseInt(badge.innerText) || 0;
         badge.innerText = totalItems;
         badge.classList.toggle('hidden', totalItems === 0);
-        
+
         // Pulse animation on update
         if (totalItems !== oldCount) {
             badge.classList.remove('scale-110');

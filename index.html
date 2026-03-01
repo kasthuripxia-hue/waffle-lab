@@ -18,7 +18,7 @@
             theme: {
                 extend: {
                     colors: {
-                        "primary": "#8d5a30",
+                        "primary": "var(--primary-color, #8d5a30)",
                         "background-light": "#f8f7f6",
                         "background-dark": "#120f0d",
                     },
@@ -31,8 +31,13 @@
         }
     </script>
     <style>
+        :root {
+            --primary-color: #8d5a30;
+        }
+
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .hide-scrollbar::-webkit-scrollbar {
@@ -90,8 +95,13 @@
         }
 
         @keyframes kenburns {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.1); }
+            0% {
+                transform: scale(1);
+            }
+
+            100% {
+                transform: scale(1.1);
+            }
         }
 
         .ken-burns {
@@ -99,8 +109,15 @@
         }
 
         @keyframes fade-in {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .animate-fade-in {
@@ -129,8 +146,9 @@
                     <button class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                         <span class="material-symbols-outlined text-primary">search</span>
                     </button>
-                    <button class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                        <span class="material-symbols-outlined text-primary">person</span>
+                    <button onclick="openSettings()"
+                        class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary">settings</span>
                     </button>
                 </div>
             </div>
@@ -141,14 +159,20 @@
                     <div id="carousel-track" class="carousel-track h-full">
                         <!-- Slides will be injected here -->
                     </div>
-                    
+
                     <!-- Gradient Overlay -->
-                    <div class="absolute inset-0 bg-gradient-to-t from-background-dark/80 via-transparent to-transparent pointer-events-none"></div>
-                    
+                    <div
+                        class="absolute inset-0 bg-gradient-to-t from-background-dark/80 via-transparent to-transparent pointer-events-none">
+                    </div>
+
                     <!-- Content -->
                     <div class="absolute bottom-6 left-6 right-6 z-20">
-                        <h2 id="carousel-title" class="text-2xl font-black text-white leading-tight transition-all duration-500 transform translate-y-2 opacity-0"></h2>
-                        <p id="carousel-desc" class="text-white/70 text-sm mt-1 mb-4 transition-all duration-500 delay-100 transform translate-y-2 opacity-0"></p>
+                        <h2 id="carousel-title"
+                            class="text-2xl font-black text-white leading-tight transition-all duration-500 transform translate-y-2 opacity-0">
+                        </h2>
+                        <p id="carousel-desc"
+                            class="text-white/70 text-sm mt-1 mb-4 transition-all duration-500 delay-100 transform translate-y-2 opacity-0">
+                        </p>
                     </div>
 
                     <!-- Indicators -->
@@ -159,19 +183,19 @@
             </div>
             <div class="px-4 mb-6">
                 <div class="flex gap-2 overflow-x-auto hide-scrollbar pb-2">
-                    <button onclick="filterMenu('all', this)" 
+                    <button onclick="filterMenu('all', this)"
                         class="filter-tab shrink-0 px-5 py-2 rounded-full text-xs font-bold transition-all duration-300 bg-primary text-white shadow-lg">
                         All
                     </button>
-                    <button onclick="filterMenu('dark', this)" 
+                    <button onclick="filterMenu('dark', this)"
                         class="filter-tab shrink-0 px-5 py-2 rounded-full text-xs font-bold transition-all duration-300 bg-primary/10 text-primary hover:bg-primary/20">
                         Dark
                     </button>
-                    <button onclick="filterMenu('milk', this)" 
+                    <button onclick="filterMenu('milk', this)"
                         class="filter-tab shrink-0 px-5 py-2 rounded-full text-xs font-bold transition-all duration-300 bg-primary/10 text-primary hover:bg-primary/20">
                         Milk
                     </button>
-                    <button onclick="filterMenu('classic', this)" 
+                    <button onclick="filterMenu('classic', this)"
                         class="filter-tab shrink-0 px-5 py-2 rounded-full text-xs font-bold transition-all duration-300 bg-primary/10 text-primary hover:bg-primary/20">
                         Classic
                     </button>
@@ -206,30 +230,93 @@
             class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-background-light/90 dark:bg-background-dark/95 backdrop-blur-lg border-t border-primary/10 px-6 py-2 flex items-center justify-between z-50">
             <a class="flex flex-col items-center gap-1 text-primary" href="index.html">
                 <span class="material-symbols-outlined font-variation-fill">home</span>
-                <span class="text-[10px] font-bold">Home</span>
+                <span class="text-[10px] font-bold" data-lang="home">Home</span>
             </a>
             <a class="flex flex-col items-center gap-1 opacity-50" href="#">
                 <span class="material-symbols-outlined">auto_awesome</span>
-                <span class="text-[10px] font-bold">Offers</span>
+                <span class="text-[10px] font-bold" data-lang="offers">Offers</span>
             </a>
             <div class="relative -mt-10">
                 <a href="checkout.html"
                     class="w-14 h-14 bg-primary rounded-full shadow-lg shadow-primary/40 border-4 border-background-light dark:border-background-dark flex items-center justify-center text-white relative">
                     <span class="material-symbols-outlined text-3xl">shopping_cart</span>
-                    <span class="cart-badge hidden absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-background-dark transition-transform duration-300">0</span>
+                    <span
+                        class="cart-badge hidden absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-background-dark transition-transform duration-300">0</span>
                 </a>
             </div>
             <a class="flex flex-col items-center gap-1 opacity-50" href="#">
                 <span class="material-symbols-outlined">receipt_long</span>
-                <span class="text-[10px] font-bold">Orders</span>
+                <span class="text-[10px] font-bold" data-lang="orders">Orders</span>
             </a>
-            <a class="flex flex-col items-center gap-1 opacity-50" href="#">
-                <span class="material-symbols-outlined">person</span>
-                <span class="text-[10px] font-bold">Account</span>
+            <a class="flex flex-col items-center gap-1 opacity-50" href="#" onclick="openSettings(); return false;">
+                <span class="material-symbols-outlined">settings</span>
+                <span class="text-[10px] font-bold" data-lang="settings">Settings</span>
             </a>
         </nav>
-    </div>
-    <script src="app.js"></script>
+        <!-- Settings Bottom Sheet -->
+        <div id="settings-overlay"
+            class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-end justify-center transition-opacity duration-300">
+            <div id="settings-sheet"
+                class="w-full max-w-md bg-background-light dark:bg-background-dark rounded-t-[2.5rem] p-8 transform translate-y-full transition-transform duration-500 ease-out shadow-2xl overflow-y-auto max-h-[90vh]">
+                <div class="flex flex-col items-center mb-8">
+                    <div class="w-12 h-1 bg-primary/20 rounded-full mb-6"></div>
+                    <h2 class="text-2xl font-black text-slate-900 dark:text-slate-100 italic tracking-tight"
+                        data-lang="settings">SETTINGS</h2>
+                </div>
+
+                <div class="space-y-8">
+                    <!-- Appearance -->
+                    <section>
+                        <label class="text-[10px] font-black uppercase tracking-[0.2em] text-primary/60 mb-4 block"
+                            data-lang="appearance">Appearance</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button onclick="setMode('light')"
+                                class="mode-btn p-4 rounded-2xl border-2 border-primary/10 flex flex-col items-center gap-2 bg-white/50 dark:bg-transparent">
+                                <span class="material-symbols-outlined text-primary">light_mode</span>
+                                <span class="text-xs font-bold" data-lang="light">Light</span>
+                            </button>
+                            <button onclick="setMode('dark')"
+                                class="mode-btn p-4 rounded-2xl border-2 border-primary/10 flex flex-col items-center gap-2 bg-white/50 dark:bg-transparent">
+                                <span class="material-symbols-outlined text-primary">dark_mode</span>
+                                <span class="text-xs font-bold" data-lang="dark">Dark</span>
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- Theme Colors -->
+                    <section>
+                        <label class="text-[10px] font-black uppercase tracking-[0.2em] text-primary/60 mb-4 block"
+                            data-lang="theme">Theme Color</label>
+                        <div class="grid grid-cols-5 gap-3" id="theme-colors">
+                            <!-- Colors will be injected -->
+                        </div>
+                    </section>
+
+                    <!-- Language -->
+                    <section>
+                        <label class="text-[10px] font-black uppercase tracking-[0.2em] text-primary/60 mb-4 block"
+                            data-lang="language">Language</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="setLang('english')"
+                                class="lang-btn p-3 rounded-xl border-2 border-primary/10 text-[10px] font-black uppercase">English</button>
+                            <button onclick="setLang('tamil')"
+                                class="lang-btn p-3 rounded-xl border-2 border-primary/10 text-[10px] font-black uppercase">தமிழ்</button>
+                            <button onclick="setLang('hindi')"
+                                class="lang-btn p-3 rounded-xl border-2 border-primary/10 text-[10px] font-black uppercase">हिन्दी</button>
+                        </div>
+                    </section>
+
+                    <button onclick="closeSettings()"
+                        class="w-full py-4 bg-primary text-white rounded-2xl font-black text-sm shadow-xl shadow-primary/30 mt-4 active:scale-95 transition-transform"
+                        data-lang="done">DONE</button>
+
+                    <a href="admin.html"
+                        class="block text-center text-primary/50 text-[10px] font-bold hover:text-primary transition-colors underline"
+                        data-lang="admin_login">Administrative Login</a>
+                </div>
+            </div>
+        </div>
+        <script src="app.js"></script>
 </body>
 
 </html>
