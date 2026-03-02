@@ -294,19 +294,23 @@
                 <div class="flex gap-2.5 overflow-x-auto hide-scrollbar pb-2 pt-1">
                     <button onclick="filterMenu('all', this)"
                         class="filter-tab shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all duration-300 bg-primary text-white shadow-[0_8px_16px_-4px_var(--primary-color,#8d5a30)] border border-primary/20 active:scale-95">
-                        <span class="material-symbols-outlined text-[14px]">grid_view</span>All
+                        <span class="material-symbols-outlined text-[14px]">grid_view</span><span
+                            data-lang="filter-all">All</span>
                     </button>
                     <button onclick="filterMenu('dark', this)"
                         class="filter-tab shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all duration-300 bg-white dark:bg-white/5 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-white/10 hover:border-primary/30 active:scale-95">
-                        <span class="material-symbols-outlined text-[14px]">dark_mode</span>Dark
+                        <span class="material-symbols-outlined text-[14px]">dark_mode</span><span
+                            data-lang="filter-dark">Dark</span>
                     </button>
                     <button onclick="filterMenu('milk', this)"
                         class="filter-tab shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all duration-300 bg-white dark:bg-white/5 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-white/10 hover:border-primary/30 active:scale-95">
-                        <span class="material-symbols-outlined text-[14px]">water_drop</span>Milk
+                        <span class="material-symbols-outlined text-[14px]">water_drop</span><span
+                            data-lang="filter-milk">Milk</span>
                     </button>
                     <button onclick="filterMenu('classic', this)"
                         class="filter-tab shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all duration-300 bg-white dark:bg-white/5 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-white/10 hover:border-primary/30 active:scale-95">
-                        <span class="material-symbols-outlined text-[14px]">stars</span>Classic
+                        <span class="material-symbols-outlined text-[14px]">stars</span><span
+                            data-lang="filter-classic">Classic</span>
                     </button>
                 </div>
             </div>
@@ -388,7 +392,8 @@
                         class="material-symbols-outlined text-slate-400 dark:text-white/30 text-2xl group-hover:text-primary transition-colors group-hover:rotate-45 transition-transform duration-300">settings</span>
                 </div>
                 <span
-                    class="text-[8px] font-black text-slate-400 dark:text-white/30 uppercase tracking-[0.2em] group-hover:text-primary transition-colors">Settings</span>
+                    class="text-[8px] font-black text-slate-400 dark:text-white/30 uppercase tracking-[0.2em] group-hover:text-primary transition-colors"
+                    data-lang="nav-settings">Settings</span>
             </a>
         </nav>
         <!-- Settings Bottom Sheet -->
@@ -411,12 +416,12 @@
                             <button onclick="setMode('light')"
                                 class="mode-btn p-4 rounded-2xl border-2 border-primary/10 flex flex-col items-center gap-2 bg-white/50 dark:bg-transparent">
                                 <span class="material-symbols-outlined text-primary">light_mode</span>
-                                <span class="text-xs font-bold" data-lang="light">Light</span>
+                                <span class="text-xs font-bold" data-lang="mode-light">Light</span>
                             </button>
                             <button onclick="setMode('dark')"
                                 class="mode-btn p-4 rounded-2xl border-2 border-primary/10 flex flex-col items-center gap-2 bg-white/50 dark:bg-transparent">
                                 <span class="material-symbols-outlined text-primary">dark_mode</span>
-                                <span class="text-xs font-bold" data-lang="dark">Dark</span>
+                                <span class="text-xs font-bold" data-lang="mode-dark">Dark</span>
                             </button>
                         </div>
                     </section>
@@ -424,7 +429,7 @@
                     <!-- Theme Colors -->
                     <section>
                         <label class="text-[10px] font-black uppercase tracking-[0.2em] text-primary/60 mb-4 block"
-                            data-lang="theme">Theme Color</label>
+                            data-lang="theme-color">Theme Color</label>
                         <div class="grid grid-cols-5 gap-3" id="theme-colors">
                             <!-- Colors will be injected -->
                         </div>
@@ -450,10 +455,11 @@
 
                     <a href="admin.html"
                         class="block text-center text-primary/50 text-[10px] font-bold hover:text-primary transition-colors underline"
-                        data-lang="admin_login">Administrative Login</a>
+                        data-lang="admin-login">Administrative Login</a>
                 </div>
             </div>
         </div>
+        <script src="lang.js"></script>
         <script src="app.js"></script>
 </body>
 

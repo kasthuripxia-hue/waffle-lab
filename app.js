@@ -152,6 +152,8 @@ function setLang(lang) {
     currentLang = lang;
     localStorage.setItem('waffleLang', lang);
     applyLang(lang);
+    // Also apply global translations (lang.js) if available
+    if (typeof WL_applyLang === 'function') WL_applyLang(lang);
 }
 
 function applyLang(lang) {

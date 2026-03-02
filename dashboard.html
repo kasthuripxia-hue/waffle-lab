@@ -25,7 +25,8 @@
             <h1 class="text-xl font-black italic tracking-tighter">LAB DASHBOARD</h1>
             <p class="text-[10px] font-bold text-[#8d5a30] uppercase">Management Console</p>
         </div>
-        <button onclick="logout()" class="text-red-500 font-bold text-xs uppercase tracking-widest">Logout</button>
+        <button onclick="logout()" class="text-red-500 font-bold text-xs uppercase tracking-widest"
+            data-lang="logout">Logout</button>
     </header>
 
     <main class="max-w-4xl mx-auto p-6">
@@ -33,12 +34,12 @@
         <div class="flex gap-6 mb-8 border-b border-black/5 pb-4">
             <button onclick="switchTab('menu')" id="tab-menu"
                 class="text-sm font-black text-[#8d5a30] transition-colors relative">
-                Menu Database
+                <span data-lang="menu-db">Menu Database</span>
                 <div class="absolute -bottom-4 left-0 w-full h-1 bg-[#8d5a30] rounded-t-full"></div>
             </button>
             <button onclick="switchTab('orders')" id="tab-orders"
                 class="text-sm font-black text-slate-400 hover:text-slate-600 transition-colors relative">
-                Recent Orders (24h)
+                <span data-lang="recent-orders">Recent Orders (24h)</span>
                 <div class="absolute -bottom-4 left-0 w-full h-1 bg-transparent rounded-t-full"></div>
             </button>
         </div>
