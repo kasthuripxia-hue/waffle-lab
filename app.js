@@ -183,7 +183,9 @@ function initCarousel() {
     carouselData = menuItems.slice(0, 5).map(item => ({
         title: item.name,
         desc: item.desc,
-        img: item.img
+        img: item.img,
+        price: item.price,
+        category: item.category || 'waffle'
     }));
 
     // Render slides
@@ -249,6 +251,19 @@ function updateCarousel() {
     setTimeout(() => {
         title.innerText = carouselData[currentSlide].title;
         desc.innerText = carouselData[currentSlide].desc;
+
+        // Update price badge
+        const priceVal = document.getElementById('carousel-price-val');
+        if (priceVal && carouselData[currentSlide].price) {
+            priceVal.innerText = carouselData[currentSlide].price;
+        }
+
+        // Update category tag
+        const tag = document.getElementById('carousel-tag');
+        if (tag && carouselData[currentSlide].category) {
+            const cat = carouselData[currentSlide].category;
+            tag.querySelector('span:last-child').innerText = cat.charAt(0).toUpperCase() + cat.slice(1);
+        }
 
         title.classList.remove('opacity-0', 'translate-y-2');
         title.classList.add('opacity-100', 'translate-y-0');
@@ -317,7 +332,7 @@ function renderMenu(flavorFilter = 'all') {
               ` : `
                 <button onclick="addToCart('${item.id}')"
                   class="w-full bg-slate-900 dark:bg-primary text-white text-[10px] font-black py-3 rounded-2xl shadow-xl shadow-black/20 hover:brightness-110 active:scale-95 transition-all uppercase tracking-[0.15em] border border-white/10">
-                  Inject
+                  + Add
                 </button>
               `}
             </div>
@@ -380,7 +395,7 @@ function saveCart() {
 function updateCartUI() {
     const viewCartBar = document.getElementById('view-cart-bar');
     const badges = document.querySelectorAll('.cart-badge');
-    const cartTotal = document.getElementById('cart-total');
+    const summaryText = document.getElementById('cart-summary-text');
 
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
     const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -401,6 +416,7 @@ function updateCartUI() {
         setTimeout(() => viewCartBar.classList.add('hidden'), 500);
     }
 
+    // Update ALL badges including the red nav cart badge
     badges.forEach(badge => {
         const oldCount = parseInt(badge.innerText) || 0;
         badge.innerText = totalItems;
@@ -409,7 +425,7 @@ function updateCartUI() {
         // Pulse animation on update
         if (totalItems !== oldCount) {
             badge.classList.remove('scale-110');
-            void badge.offsetWidth; // Force reflow
+            void badge.offsetWidth;
             badge.classList.add('scale-110');
             setTimeout(() => badge.classList.remove('scale-110'), 250);
         }
