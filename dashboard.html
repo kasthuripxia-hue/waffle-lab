@@ -21,9 +21,16 @@
 <body class="bg-[#f8f7f6] text-slate-900 min-h-screen pb-24">
     <header
         class="sticky top-0 z-50 bg-white/80 backdrop-blur-md px-6 py-4 border-b border-black/5 flex justify-between items-center">
-        <div>
-            <h1 class="text-xl font-black italic tracking-tighter">LAB DASHBOARD</h1>
-            <p class="text-[10px] font-bold text-[#8d5a30] uppercase">Management Console</p>
+        <div class="flex items-center gap-4">
+            <a href="admin.html"
+                class="flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors"
+                title="Back to Login">
+                <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+            </a>
+            <div>
+                <h1 class="text-xl font-black italic tracking-tighter">LAB DASHBOARD</h1>
+                <p class="text-[10px] font-bold text-[#8d5a30] uppercase">Management Console</p>
+            </div>
         </div>
         <button onclick="logout()" class="text-red-500 font-bold text-xs uppercase tracking-widest"
             data-lang="logout">Logout</button>
